@@ -5,8 +5,14 @@ end
 When(/^I login with invalid credentials$/) do
 	@browser = Watir::Browser.new :firefox
 	@browser.goto('https://wwww.admin.typeform.com/login')
+	@browser.text_field(id: '_username').set(@email)
+	@browser.text_field(id: '_password').set('broken_password')
+	@browser.button(id: 'btnlogin').click
 
-    sleep 3
-	@browser.close
+end
 
+Then(/^I should get a login error message$/) do
+  error = @browser.div(id: 'error').visible?
+  expect(error).to eql(true)
+  @browser.close
 end
